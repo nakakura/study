@@ -1,0 +1,10 @@
+[package]
+name = "udpthread"
+version = "0.1.0"
+authors = ["Toshiya Nakakura <nakakura@me.com>"]
+
+[[bin]]
+name = "main"
+path = "src/main.rs"
+
+[dependencies]

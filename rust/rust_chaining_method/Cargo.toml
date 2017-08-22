@@ -1,0 +1,12 @@
+[package]
+name = "functor"
+version = "0.1.0"
+authors = ["Toshiya Nakakura <nakakura@me.com>"]
+
+[dependencies]
+#cargo build --features "clippy"
+clippy = {version = "*", optional = true}
+crossbeam = "*"
+
+[features]
+default = []

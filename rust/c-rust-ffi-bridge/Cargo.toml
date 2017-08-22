@@ -1,0 +1,12 @@
+[package]
+name = "janus_telexistence"
+version = "0.0.1"
+authors = ["Toshiya Nakakura <nakakura@me.com>"]
+
+[lib]
+crate-type = ["dylib"] # could be `staticlib` as well
+name = "janus_telexistence"
+
+[dependencies]
+lazy_static = "*"
+libc = "*"

@@ -1,0 +1,12 @@
+[package]
+name = "testenum"
+version = "0.1.0"
+authors = ["Toshiya Nakakura <nakakura@me.com>"]
+
+[dependencies]
+crossbeam = "*"
+chan = "*"
+chan-signal = "*"
+lazy_static = "*"
+mio = "*"
+rotor = "*"
