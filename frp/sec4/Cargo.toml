@@ -5,3 +5,4 @@ authors = ["Toshiya Nakakura <nakakura@me.com>"]
 
 [dependencies]
 console = "*"
+carboxyl = "*"

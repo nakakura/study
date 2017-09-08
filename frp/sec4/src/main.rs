@@ -1,4 +1,9 @@
 extern crate console;
+extern crate carboxyl;
+
+pub mod life_cycle;
+pub mod inputs;
+pub mod outputs;
 
 use console::Term;
 
@@ -29,7 +34,8 @@ fn main() {
         let mut buf_reader = io::BufReader::new(s);
         buf_reader.read_line(&mut str);
         //println!("{}hoge", str.lines().next().unwrap());
-        clear();
+        let _ = clear();
+
         display(1.0, 0.0, 0.0, 0.0, 0.0, 0.0);
     }
 
