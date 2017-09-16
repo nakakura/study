@@ -1,0 +1,8 @@
+[package]
+name = "clearfield"
+version = "0.1.0"
+authors = ["nakakura"]
+
+[dependencies]
+console = "*"
+carboxyl = "*"
