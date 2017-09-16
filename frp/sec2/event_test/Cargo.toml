@@ -1,8 +1,0 @@
-[package]
-name = "sec2_event_test"
-version = "0.1.0"
-authors = ["Toshiya Nakakura <nakakura@me.com>"]
-
-[dependencies]
-console = "*"
-carboxyl = "*"
