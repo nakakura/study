@@ -5,3 +5,4 @@ authors = ["Toshiya Nakakura <nakakura@me.com>"]
 
 [dependencies]
 futures = "0.1.16"
+tokio-core = "*"

@@ -1,5 +1,5 @@
 [package]
-name = "cell"
+name = "accumulator"
 version = "0.1.0"
 authors = ["nakakura"]
 

@@ -1,9 +1,8 @@
 [package]
-name = "cell"
+name = "red_green"
 version = "0.1.0"
 authors = ["nakakura"]
 
 [dependencies]
 console = "*"
-futures = "0.1.16"
-tokio-core = "*"
+carboxyl = "*"

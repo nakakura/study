@@ -24,10 +24,11 @@ fn clear(lines: usize) -> io::Result<()> {
     term.clear_last_lines(lines)?;
     Ok(())
 }
-/*
-fn display<F>(mut cell: futures::stream::Map<futures::sync::mpsc::Receiver<String>, F>) {
+
+fn display(cell: mpsc::Receiver<String>) {
     let mut previous = "".to_string();
-    while let Some(x) = cell.poll() {
+    let mut cell = cell.wait();
+    while let Some(x) = cell.next() {
         let flag = x.and_then(|next| {
             if previous.eq(&next) {
                 thread::sleep(Duration::from_millis(10));
@@ -46,12 +47,18 @@ fn display<F>(mut cell: futures::stream::Map<futures::sync::mpsc::Receiver<Strin
         }
     }
 }
-*/
+
 fn main() {
     println!("send messate to localhost:3333 instead for button click");
-    println!("default");
-    let (tx, rx): (mpsc::Sender<String>, mpsc::Receiver<String>) = mpsc::channel::<String>(5);
-    let mut rx = rx.map(|x| format!("{}-xxx", x));
+    let (tx, rx): (mpsc::Sender<isize>, mpsc::Receiver<isize>) = mpsc::channel::<isize>(5);
+
+    let (minus_input, minus_output): (mpsc::Sender<isize>, mpsc::Receiver<isize>) = mpsc::channel::<isize>(5);
+    minus_output.map(|x| -1);
+
+    let rx = rx.fold(0, |sum, val|{
+        println!("{}", sum);
+        Ok(sum + val)
+    });
 
     let listener = TcpListener::bind("0.0.0.0:3333").unwrap();
     let th1 = thread::spawn(move || {
@@ -66,22 +73,23 @@ fn main() {
             if str.eq(&"exit".to_string()) {
                 std::process::exit(1);
             }
-            x.send(str.to_string()).wait().unwrap()
+            println!("send");
+            x.send(100).wait().unwrap()
         });
     });
 
-    let th2 = thread::spawn(move || {
+    let display_th = thread::spawn(move || {
+        /*
         let mut core = Core::new().unwrap();
-        let x = rx.for_each(|x| {
+        let rx = rx.into_stream().for_each(|x| {
             println!("{}", x);
             Ok(())
         });
-        core.run(x);
+        core.run(rx);
+        */
+        let x = rx.wait();
     });
 
-
-    let _ = th2.join();
-    println!("close th2");
     let _ = th1.join();
-    println!("close th1");
+    let _ = display_th.join();
 }
