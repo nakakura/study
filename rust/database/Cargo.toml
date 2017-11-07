@@ -1,0 +1,18 @@
+[package]
+name = "mono"
+version = "0.1.0"
+authors = ["Toshiya Nakakura <nakakura@me.com>"]
+
+[[bin]]
+name = "mono"
+
+[dependencies]
+iron = "0.5"
+env_logger = "0.4"
+diesel = { version = "0.15.0", features = ["mysql"] }
+diesel_codegen = { version = "0.15.0", features = ["mysql"] }
+dotenv = "0.9.0"
+serde = "*"
+serde_json = "*"
+serde_derive = "*"
+regex = "*"

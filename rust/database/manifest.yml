@@ -1,0 +1,6 @@
+---
+applications:
+- name: mono
+  instances: 1
+  buildpack: https://github.com/nakakura/rust-buildpack.git#diesel
+  command: export DATABASE_URL=mysql://uZxpgrZArf4aj37q:zwsqHCvScVDQIais@10.0.51.100:3306/cf_32f5668a_2ffc_4f0c_b553_f7197e5dfc16; export PATH=$PATH:/home/vcap/app/target/release/bin; diesel setup; diesel migration run; ./target/release/mono
