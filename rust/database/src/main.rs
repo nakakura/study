@@ -6,57 +6,49 @@ extern crate regex;
 extern crate serde;
 extern crate serde_json;
 #[macro_use] extern crate serde_derive;
+#[macro_use] extern crate lazy_static;
 mod models;
 mod schema;
 mod http;
+mod database_connection;
 
-use self::models::*;
-
-use regex::Regex;
-use diesel::mysql::MysqlConnection;
 use diesel::prelude::*;
 
+use models::*;
+
 use std::io::{stdin, Read};
-use std::env;
 
-#[cfg(not(windows))]
-const EOF: &'static str = "CTRL+D";
-
-#[cfg(windows)]
-const EOF: &'static str = "CTRL+Z";
-
-fn db_url() -> String {
-    env::var("DATABASE_URL").ok().unwrap_or("mysql://root:mysql@127.0.0.1:3306/mono".to_string())
-}
-
-pub fn establish_connection() -> MysqlConnection {
-    MysqlConnection::establish(&db_url())
-        .expect(&format!("Error connecting to {}", db_url()))
-}
-
-pub fn create_post(conn: &MysqlConnection, title: &str, body: &str) -> Post {
+pub fn create_post(title_str: &str, body_str: &str) {
     use schema::posts;
+    use schema::posts::dsl::*;
 
     let new_post = NewPost {
-        title: title,
-        body: body,
+        title: title_str,
+        body: body_str,
     };
 
-    diesel::insert(&new_post).into(posts::table)
-        .execute(conn)
-        .expect("Error saving new post");
+    database_connection::connection(|connection| {
+        diesel::insert(&new_post).into(posts::table)
+            .execute(connection)
+            .expect("Error saving new post");
+        let results = posts.filter(published.eq(false))
+            .limit(5)
+            .load::<Post>(connection)
+            .expect("Error loading posts");
 
-    posts::table.order(posts::id.desc()).first(conn).unwrap()
+        println!("Displaying {} posts", results.len());
+        for post in results {
+            println!("{}", post.title);
+            println!("----------\n");
+            println!("{}", post.body);
+        }
+    });
+
+    //posts::table.order(posts::id.desc()).first(database_connection::connection()).unwrap()
 }
 
 fn main() {
-    use self::schema::posts::dsl::*;
-
-
     env_logger::init().unwrap();
-    println!("{}", db_url());
-
-    let connection = establish_connection();
 
     let mut title2 = String::new();
     let mut message = String::new();
@@ -65,24 +57,15 @@ fn main() {
     stdin().read_line(&mut title2).unwrap();
     let title2 = title2.trim_right(); // Remove the trailing newline
 
-    println!("\nOk! Let's write {} (Press {} when finished)\n", title2, EOF);
+    println!("\nOk! Let's write {} (Press {} when finished)\n", title2, database_connection::EOF);
     stdin().read_to_string(&mut message).unwrap();
 
-    let post = create_post(&connection, title2, &message);
-    println!("\nSaved draft {} with id {}", title2, post.id);
+    let _ = create_post(title2, &message);
+    //println!("\nSaved draft {} with id {}", title2, post.id);
 
-    let results = posts.filter(published.eq(false))
-        .limit(5)
-        .load::<Post>(&connection)
-        .expect("Error loading posts");
+    //let post = database_connection::create_post(title2, posts);
 
-    println!("Displaying {} posts", results.len());
-    for post in results {
-        println!("{}", post.title);
-        println!("----------\n");
-        println!("{}", post.body);
-    }
-    http::http_start();
+    //http::http_start();
 }
 
 #[test]
