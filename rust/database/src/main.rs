@@ -13,38 +13,47 @@ mod http;
 mod database_connection;
 
 use diesel::prelude::*;
-
-use models::*;
+use schema::posts;
+use schema::posts::dsl::*;
 
 use std::io::{stdin, Read};
 
-pub fn create_post(title_str: &str, body_str: &str) {
-    use schema::posts;
-    use schema::posts::dsl::*;
+use models::*;
 
+fn insert(title_str: &str, body_str: &str) {
     let new_post = NewPost {
         title: title_str,
         body: body_str,
     };
 
-    database_connection::connection(|connection| {
+    let x = database_connection::connection(|connection| {
         diesel::insert(&new_post).into(posts::table)
             .execute(connection)
-            .expect("Error saving new post");
-        let results = posts.filter(published.eq(false))
-            .limit(5)
-            .load::<Post>(connection)
-            .expect("Error loading posts");
+        /*
 
-        println!("Displaying {} posts", results.len());
+
         for post in results {
             println!("{}", post.title);
             println!("----------\n");
             println!("{}", post.body);
         }
+        */
     });
 
-    //posts::table.order(posts::id.desc()).first(database_connection::connection()).unwrap()
+    println!("Displaying {:?} posts", x);
+}
+
+fn display() {
+    let x = database_connection::connection(|connection| {
+        posts.filter(published.eq(false))
+            .limit(5)
+            .load::<Post>(connection)
+    });
+
+    for post in x.unwrap() {
+        println!("{}", post.title);
+
+    }
 }
 
 fn main() {
@@ -60,7 +69,8 @@ fn main() {
     println!("\nOk! Let's write {} (Press {} when finished)\n", title2, database_connection::EOF);
     stdin().read_to_string(&mut message).unwrap();
 
-    let _ = create_post(title2, &message);
+    let _ = insert(title2, &message);
+    display();
     //println!("\nSaved draft {} with id {}", title2, post.id);
 
     //let post = database_connection::create_post(title2, posts);

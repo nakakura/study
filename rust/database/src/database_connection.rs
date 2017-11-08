@@ -1,3 +1,4 @@
+use diesel;
 use diesel::mysql::MysqlConnection;
 use diesel::prelude::*;
 
@@ -25,7 +26,8 @@ fn establish_connection() -> MysqlConnection {
         .expect(&format!("Error connecting to {}", db_url()))
 }
 
-pub fn connection<F>(closure: F) where F: Fn(&MysqlConnection) {
-    closure(&*CONNECTION.lock().unwrap());
+pub fn connection<F, T>(closure: F) -> QueryResult<T>
+    where F: Fn(&MysqlConnection) -> QueryResult<T> {
+    closure(&*CONNECTION.lock().unwrap())
 }
 
