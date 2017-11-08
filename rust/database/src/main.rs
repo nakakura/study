@@ -29,15 +29,6 @@ fn insert(title_str: &str, body_str: &str) {
     let x = database_connection::connection(|connection| {
         diesel::insert(&new_post).into(posts::table)
             .execute(connection)
-        /*
-
-
-        for post in results {
-            println!("{}", post.title);
-            println!("----------\n");
-            println!("{}", post.body);
-        }
-        */
     });
 
     println!("Displaying {:?} posts", x);
