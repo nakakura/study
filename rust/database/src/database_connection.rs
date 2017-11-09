@@ -1,4 +1,3 @@
-use diesel;
 use diesel::mysql::MysqlConnection;
 use diesel::prelude::*;
 
@@ -22,8 +21,9 @@ fn db_url() -> String {
 }
 
 fn establish_connection() -> MysqlConnection {
-    MysqlConnection::establish(&db_url())
-        .expect(&format!("Error connecting to {}", db_url()))
+    let url = db_url();
+    MysqlConnection::establish(&url)
+        .expect(&format!("Error connecting to {}", url))
 }
 
 pub fn connection<F, T>(closure: F) -> QueryResult<T>
