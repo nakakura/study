@@ -1,0 +1,5 @@
+-- Your SQL goes here
+CREATE TABLE nkhrs (
+  id INT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
+  phrase TEXT
+) COLLATE utf8mb4_bin;
