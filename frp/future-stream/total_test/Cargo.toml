@@ -1,0 +1,9 @@
+[package]
+name = "total_test"
+version = "0.1.0"
+authors = ["Toshiya Nakakura <nakakura@me.com>"]
+
+[dependencies]
+futures = "*"
+tokio-core = "*"
+rand = "*"

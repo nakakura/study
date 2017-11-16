@@ -26,6 +26,7 @@ fn clear(lines: usize) -> io::Result<()> {
 fn display(mut cell: futures::stream::Wait<futures::stream::Select<futures::sync::mpsc::Receiver<std::string::String>, futures::sync::mpsc::Receiver<std::string::String>>>){
     let mut previous = "".to_string();
     while let Some(x) = cell.next() {
+println!("let some ");
         let flag = x.and_then(|next| {
             if previous.eq(&next) {
                 thread::sleep(Duration::from_millis(10));
