@@ -1,0 +1,10 @@
+[package]
+name = "futures-fs-test"
+version = "0.1.0"
+authors = ["Toshiya Nakakura <nakakura@me.com>"]
+
+[dependencies]
+futures = "*"
+futures-fs = "*"
+bytes = "*"
+tokio = "*"
