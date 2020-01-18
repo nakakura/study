@@ -1,0 +1,4 @@
+#!/bin/sh
+cd /home/nakakura/bin/xmind/XMind_amd64
+./XMind -vm /usr/lib/jvm/java-8-openjdk-amd64/bin/java
+
